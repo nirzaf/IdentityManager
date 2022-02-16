@@ -1,0 +1,38 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Authoriation
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    var isAdmin = await Authoriation.AuthorizeAsync(User, null, "Admin");
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        var twofactor = ViewData["TwoFactorEnabled"];
+        if (twofactor != null && twofactor.ToString().ToLower() == "true")
+        {
+            <a asp-action="RemoveAuthenticator" asp-controller="Account" class="btn btn-warning">Reset & Remove Two Factor Auth</a>
+        }
+        else
+        {
+            <a asp-action="EnableAuthenticator" asp-controller="Account">Setup Two Factor Auth</a>
+        }
+        <br /><br />
+
+        @if (isAdmin.Succeeded)
+        {
+            <h2>Your role is - Admin</h2>
+        }
+        else
+        {
+            <h2>Your role is - Non Admin</h2>
+        }
+    }
+
+
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
